@@ -153,10 +153,18 @@ public class Skeleton : MonoBehaviour
         if (colliders != null&&hit)
         {            
            if ((colliders.transform.position - transform.position).x * transform.localScale.x > 0)
-            {
-                //todo 攻击判定成功后的击退（可能是升龙）、伤害等逻辑
+            {                
             float direction = -(transform.position - colliders.transform.position).normalized.x;
-            Player._instance.IsHit(damage,direction);
+                if (Player._instance.isShield)
+                {
+                    rb.velocity = new Vector2(10 * direction, rb.velocity.y);
+                    hp -= DataCalucalculator.Damage(damage, block);
+                }
+                else
+                {
+                    Player._instance.IsHit(damage, direction);
+                }
+                hit = false;
             }
         }
     }
@@ -176,5 +184,14 @@ public class Skeleton : MonoBehaviour
         am.SetInteger("Attack", attack);
         am.SetBool("IsDead", isDead);
         am.SetBool("IsHit", isHit);
+        if (stateInfo.IsName("attackA") && stateInfo.normalizedTime < 1f)
+        {
+            attack = 1;
+        }
+    }
+
+    private void AudioAttack()
+    {
+        AudioManager.PlayAttack();
     }
 }

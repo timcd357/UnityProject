@@ -125,8 +125,6 @@ public class Player : MonoBehaviour
         if (shieldPress)
         {
             isShield = true;
-            //todo shield期间为弹反时间
-
         }
     }
     private void Move()
@@ -262,7 +260,7 @@ public class Player : MonoBehaviour
     private void CircleAttackRange(float range,float forceX,float forceY,float downAttackForce)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range,LayerMask.GetMask("Enemy"));
-        if (colliders != null)
+        if (colliders != null&&canHit)
         {
             foreach (Collider2D c in colliders)
             {               
@@ -279,6 +277,7 @@ public class Player : MonoBehaviour
                     Invoke("AnimPlay", 0.1f);
                 }
             }
+            canHit = false;
         }
     }
 
@@ -287,7 +286,7 @@ public class Player : MonoBehaviour
         Vector2 end = new Vector2(transform.position.x + range * transform.localScale.x, transform.position.y);
         RaycastHit2D[] colliders = Physics2D.LinecastAll(transform.position, end, LayerMask.GetMask("Enemy"));
 
-        if (colliders != null)
+        if (colliders != null&&canHit)
         {
             foreach (RaycastHit2D c in colliders)
             {
@@ -300,6 +299,7 @@ public class Player : MonoBehaviour
                 c.transform.SendMessage("Hit", o);
                 Invoke("AnimPlay", 0.2f);
             }
+            canHit = false;
         }
     }
 
@@ -324,6 +324,11 @@ public class Player : MonoBehaviour
         }
         rb.velocity = new Vector2(10 * direction, rb.velocity.y);
         hp -= DataCalucalculator.Damage(d, block);
+    }
+
+    private void AudioAttack()
+    {
+        AudioManager.PlayAttack();
     }
 
 }

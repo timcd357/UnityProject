@@ -16,11 +16,13 @@ public class PlayerAnimationController : MonoBehaviour
     void Update()
     {
         stateInfo = am.GetCurrentAnimatorStateInfo(0);
+        if (!player.isHit && !player.isDead) { 
         am.SetFloat("Horizontal", Mathf.Abs(player.velocityX));
-        am.SetFloat("VectorY", player.rb.velocity.y);
-        am.SetBool("IsOnGround", player.isOnGround);
+        am.SetFloat("VectorY", player.rb.velocity.y);       
         am.SetBool("IsRoll", player.isRoll);
         am.SetBool("IsShield", player.isShield);
+        }
+        am.SetBool("IsOnGround", player.isOnGround);
         am.SetBool("IsHit", player.isHit);
         am.SetBool("IsDead", player.isDead);
         AttackToIdle();
